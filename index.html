@@ -396,6 +396,7 @@ const Sound = (() => {
     // iOS unlock: play one silent buffer inside the tap
     const b = ctx.createBufferSource(); b.buffer = ctx.createBuffer(1, 1, 22050); b.connect(master); b.start(0);
     ctx.resume();
+    loadHorn();
   }
 
   // Brass-ish voice: detuned saws through an opening low-pass filter
@@ -423,28 +424,6 @@ const Sound = (() => {
     }
   }
   const chord = (notes, t, dur, vol) => notes.forEach((n) => brass(note(n), t, dur, vol));
-
-  // Buzzy party-horn "BRAAAP" that bends up in pitch
-  function partyHorn(t, base = 330, dur = 0.9) {
-    const o = ctx.createOscillator(), o2 = ctx.createOscillator();
-    const g = ctx.createGain(), f = ctx.createBiquadFilter();
-    const lfo = ctx.createOscillator(), lg = ctx.createGain();
-    o.type = "sawtooth"; o2.type = "square";
-    o.frequency.setValueAtTime(base * 0.75, t);
-    o.frequency.exponentialRampToValueAtTime(base, t + 0.12);
-    o.frequency.setValueAtTime(base, t + dur * 0.7);
-    o.frequency.exponentialRampToValueAtTime(base * 1.12, t + dur);
-    o2.frequency.value = base * 0.5;
-    lfo.frequency.value = 28; lg.gain.value = 12;
-    lfo.connect(lg); lg.connect(o.frequency); lg.connect(o2.frequency);
-    f.type = "bandpass"; f.frequency.value = base * 3; f.Q.value = 0.9;
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(0.22, t + 0.05);
-    g.gain.setValueAtTime(0.2, t + dur - 0.1);
-    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    o.connect(f); o2.connect(f); f.connect(g).connect(master);
-    for (const x of [o, o2, lfo]) { x.start(t); x.stop(t + dur + 0.05); }
-  }
 
   let noiseBuf;
   function noise() {
@@ -478,20 +457,28 @@ const Sound = (() => {
     }
   }
 
-  // Ta-ta-ta-TAAA fanfare, party horns, then Happy Birthday on brass
-  function celebrate() {
+  // Real airhorn sample, loaded when she taps "open"
+  let hornBuf, hornReady;
+  function loadHorn() {
+    hornReady = fetch("video/airhorn.mp3")
+      .then((r) => r.arrayBuffer())
+      .then((ab) => new Promise((res, rej) => ctx.decodeAudioData(ab, res, rej)))
+      .then((buf) => { hornBuf = buf; })
+      .catch(() => {});
+  }
+
+  // Airhorn blast, then Happy Birthday on brass
+  async function celebrate() {
     if (!ctx) return;
+    await hornReady;
     const t0 = ctx.currentTime + 0.05;
-    // Fanfare in C
-    chord([67, 72, 76], t0, 0.16);
-    chord([67, 72, 76], t0 + 0.2, 0.16);
-    chord([67, 72, 76], t0 + 0.4, 0.16);
-    chord([72, 76, 79, 84], t0 + 0.62, 1.3, 0.16);
-    chord([48, 60], t0 + 0.62, 1.3, 0.14);
-    // Horns blaring
-    const h = t0 + 1.9;
-    partyHorn(h, 330, 1.0); partyHorn(h + 0.05, 415, 1.0);
-    partyHorn(h + 1.1, 370, 0.5); partyHorn(h + 1.65, 440, 0.9); partyHorn(h + 1.7, 294, 0.9);
+    let h = t0;
+    if (hornBuf) {
+      const s = ctx.createBufferSource(), g = ctx.createGain();
+      s.buffer = hornBuf; g.gain.value = 1;
+      s.connect(g).connect(master); s.start(t0);
+      h = t0 + hornBuf.duration - 0.4; // song kicks in as the blast fades
+    }
     // Happy Birthday (3/4 time), with a simple bass
     const beat = 0.36;
     const song = [
@@ -501,14 +488,11 @@ const Sound = (() => {
       [77,.75],[77,.25],[76,1],[72,1],[74,1],[72,3],
     ];
     const bass = [[48,3],[43,3],[43,3],[48,3],[48,3],[53,3],[48,3],[43,1.5],[48,3]];
-    let t = h + 2.8;
+    let t = h + 0.4;
     const start = t;
     for (const [n, d] of song) { brass(note(n), t, d * beat * 0.92, 0.16); t += d * beat; }
     t = start;
     for (const [n, d] of bass) { brass(note(n), t, d * beat * 0.9, 0.12); t += d * beat; }
-    // Final horns at the end of the song
-    const end = start + 26 * beat;
-    partyHorn(end - 0.2, 392, 1.1); partyHorn(end - 0.15, 494, 1.1);
   }
 
   // Sparkly "ta-da" when the present opens
