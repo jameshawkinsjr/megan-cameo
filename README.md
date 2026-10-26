@@ -24,7 +24,9 @@ Plain HTML, no build step, no dependencies. All sounds are generated in the brow
 
 A separate page at **`/quiz/`** (e.g. `https://jameshawkinsjr.github.io/megan-cameo/quiz/`). The birthday page at `/` is unchanged.
 
-Flow: intro (Summer House vs Real Housewives; no names until the reveal) → 8 questions (progress bar, back button, answers kept) → "producers are reviewing the footage" → result (Kyle, Bethenny, or Bravo Hybrid on a 4–4 tie) with score split → "Reveal your Cameo surprises" → both Cameo cards (the winner's first, marked YOUR ALTER EGO) → restart.
+Flow: intro (Summer House vs Real Housewives; no names until the reveal) → 8 questions (progress bar, back button, answers kept) → "producers are reviewing the footage" → result (Kyle, Bethenny, or Bravo Hybrid on a 4–4 tie) with score split → "Get a second opinion" → "Reveal your Cameo surprises" → both Cameo cards (the winner's first, marked YOUR ALTER EGO; swipeable on phones) → restart.
+
+Every screen is sized to fit an iPhone screen without scrolling; images shrink to the space that's left.
 
 | What | Where |
 | --- | --- |

@@ -20,7 +20,7 @@
   <!-- 1. Introduction -->
   <section id="intro" class="screen is-active" aria-labelledby="introTitle">
     <p class="eyebrow">A Very Important Bravo Investigation</p>
-    <div class="duo duo--intro" id="introDuo"></div>
+    <div class="stretch"><div class="duo duo--intro" id="introDuo"></div></div>
     <h1 id="introTitle" class="display" tabindex="-1">Who are you <em>more</em> like?</h1>
     <p class="subhead">Summer House <span class="or">or</span> Real Housewives?</p>
     <p class="lede">You think you know yourself. Bravo thinks otherwise.</p>
@@ -56,7 +56,18 @@
   </section>
 
   <!-- 3. Results (filled in by app.js) -->
-  <section id="result" class="screen" aria-labelledby="resultTitle" hidden></section>
+  <section id="result" class="screen reveal" aria-labelledby="resultTitle" hidden></section>
+
+  <!-- 3b. Teaser for the Cameos -->
+  <section id="verdict" class="screen" aria-labelledby="verdictTitle" hidden>
+    <div class="teaser">
+      <p class="eyebrow">Your verdict is in</p>
+      <h2 id="verdictTitle" tabindex="-1">Hear it from the professionals.</h2>
+      <p>Your Bravo alter ego has been identified. But we thought you deserved a second opinion.</p>
+      <button id="revealCameosBtn" class="btn btn--primary" type="button">Reveal your Cameo surprises</button>
+    </div>
+    <button id="verdictBackBtn" class="link-btn" type="button">← Back to my results</button>
+  </section>
 
   <!-- 4. Cameo finale (filled in by app.js) -->
   <section id="cameos" class="screen" aria-labelledby="cameosTitle" hidden></section>

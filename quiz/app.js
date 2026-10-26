@@ -212,21 +212,20 @@ function renderResult(s) {
   const bethLabel = `${s.bethennyScore}/${s.total} — ${formatPercent(s.bethennyPercentage)}`;
 
   const stage = isHybrid
-    ? h("div", { class: "result__stage result__stage--duo" }, duo())
-    : h("div", { class: `result__stage is-${s.result}`, style: { "--halo": "var(--accent-glow)" } }, portrait(s.result));
+    ? h("div", { class: "stretch result__stage result__stage--duo" }, duo())
+    : h("div", { class: `stretch result__stage is-${s.result}`, style: { "--halo": "var(--accent-glow)" } }, portrait(s.result, { caption: false }));
 
   const kyleSeg = h("span", { class: "split__seg split__seg--kyle" });
   const bethSeg = h("span", { class: "split__seg split__seg--bethenny" });
 
-  const reveal = h("div", { class: "reveal" },
+  $("result").replaceChildren(
     h("p", { class: "eyebrow" }, "The results are in"),
     stage,
     h("h2", { id: "resultTitle", class: `display result__title ${isHybrid ? "" : `is-${s.result}`}`, tabindex: "-1" },
       h("span", { class: "line line--small" }, r.headline),
       h("span", { class: "line line--name", style: { "--name-color": isHybrid ? "var(--champagne)" : "var(--accent)" } }, r.name)),
     h("p", { class: "result__subtitle" }, r.subtitle),
-    h("section", { class: "scorecard", "aria-labelledby": "tallyHeading" },
-      h("h3", { class: "eyebrow", id: "tallyHeading" }, "The official tally"),
+    h("section", { class: "scorecard", "aria-label": "The official tally" },
       h("div", {
         class: "split", role: "img",
         "aria-label": `Kyle ${s.kyleScore} of ${s.total}, ${formatPercent(s.kylePercentage)}. Bethenny ${s.bethennyScore} of ${s.total}, ${formatPercent(s.bethennyPercentage)}.`,
@@ -236,16 +235,9 @@ function renderResult(s) {
         h("div", { class: "is-bethenny" }, h("dt", {}, "Bethenny"), h("dd", {}, bethLabel)))),
     h("p", { class: "result__desc" }, r.description),
     h("ul", { class: "traits", "aria-label": "Your personality traits" }, r.traits.map((t) => h("li", {}, t))),
-    h("p", { class: "diagnosis" }, "Your official diagnosis: ", h("strong", {}, r.diagnosis)));
-
-  const teaser = h("div", { class: "teaser" },
-    h("p", { class: "eyebrow" }, "Your verdict is in"),
-    h("h2", {}, "Hear it from the professionals."),
-    h("p", {}, "Your Bravo alter ego has been identified. But we thought you deserved a second opinion."),
-    h("button", { class: "btn btn--primary", type: "button", id: "revealCameosBtn", onclick: revealCameos }, "Reveal your Cameo surprises"));
-
-  $("result").replaceChildren(reveal, teaser,
-    h("button", { class: "link-btn", type: "button", onclick: restart }, "Retake the quiz"));
+    h("p", { class: "diagnosis" }, "Your official diagnosis: ", h("strong", {}, r.diagnosis)),
+    h("button", { class: "btn btn--primary", type: "button", id: "secondOpinionBtn", onclick: () => show("verdict") },
+      "Get a second opinion ", h("span", { "aria-hidden": "true" }, "→")));
 
   // Animate the split bar from empty to the real proportions
   requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -261,12 +253,32 @@ function revealCameos() {
   const result = state.score?.result;
   if (!result) return;
   const order = result === "bethenny" ? ["bethenny", "kyle"] : ["kyle", "bethenny"];
+  const cards = order.map((key) => cameoCard(key, key === result));
+  const track = h("div", { class: "cameo-track" }, cards);
+
+  // Phone carousel: dots + hint, kept in sync with swiping
+  const dots = cards.map((card, i) => h("button", {
+    class: "pager__dot", type: "button", "aria-current": String(i === 0),
+    "aria-label": `Show ${PEOPLE[order[i]].name}’s Cameo`,
+    onclick: () => track.scrollTo({ left: card.offsetLeft - track.offsetLeft - (track.clientWidth - card.offsetWidth) / 2, behavior: reduceMotion ? "auto" : "smooth" }),
+  }));
+  const hint = h("span", { class: "pager__hint" }, "Swipe for a second opinion →");
+  const pager = h("div", { class: "pager" }, dots, hint);
+  let currentCard = 0;
+  track.addEventListener("scroll", () => {
+    const i = Math.round(track.scrollLeft / Math.max(1, track.scrollWidth - track.clientWidth) * (cards.length - 1));
+    if (i === currentCard) return;
+    currentCard = i;
+    dots.forEach((d, j) => d.setAttribute("aria-current", String(j === i)));
+    hint.style.visibility = i === 0 ? "visible" : "hidden";
+    pauseVideos(); // don't keep playing a card that's been swiped away
+  }, { passive: true });
 
   $("cameos").replaceChildren(
     h("header", { class: "cameos__head" },
-      h("p", { class: "eyebrow" }, "The grand finale"),
       h("h2", { id: "cameosTitle", tabindex: "-1" }, "A word from the professionals")),
-    h("div", { class: "cameo-grid" }, order.map((key) => cameoCard(key, key === result))),
+    track,
+    pager,
     h("p", { class: "finale" }, "“Because one Bravo opinion just wasn’t enough.”"),
     h("div", { class: "finale-actions" },
       h("button", { class: "link-btn", type: "button", onclick: backToResult }, "← Back to my results"),
@@ -284,8 +296,9 @@ function backToResult() {
 function cameoCard(key, featured) {
   const p = PEOPLE[key];
   const c = CAMEOS[key] || {};
-  const media = h("div", { class: "cameo__media" });
-  mountMedia(media, key);
+  const frame = h("div", { class: "cameo__frame" });
+  mountMedia(frame, key);
+  const media = h("div", { class: "cameo__media" }, frame);
   return h("article", { class: `cameo is-${key} ${featured ? "cameo--featured" : ""}`, "aria-labelledby": `cameo-${key}-name` },
     featured ? h("p", { class: "cameo__badge" }, "YOUR ALTER EGO") : null,
     h("header", { class: "cameo__head" },
@@ -445,3 +458,5 @@ $("startBtn").addEventListener("click", () => {
 });
 $("backBtn").addEventListener("click", goBack);
 $("nextBtn").addEventListener("click", () => advance());
+$("revealCameosBtn").addEventListener("click", revealCameos);
+$("verdictBackBtn").addEventListener("click", () => show("result"));
