@@ -456,6 +456,7 @@ function restart() {
   Scoring.stop();
   Music.stopAll(0.3);
   showMuteButton(false);
+  renderSoundBanner();
   $("result").replaceChildren();
   $("cameos").replaceChildren();
   $("qcard").classList.remove("is-leaving", "is-entering", "is-back");
@@ -611,11 +612,35 @@ const Music = (() => {
     else if (Object.keys(playing).length) ctx.resume();
   });
 
-  return { unlock, play, stop, stopAll, setMuted, get muted() { return muted; } };
+  const isPlaying = (key) => key in playing;
+
+  return { unlock, play, stop, stopAll, setMuted, isPlaying, get muted() { return muted; } };
 })();
 
 const ICON_SOUND_ON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>';
 const ICON_SOUND_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>';
+
+/* Sound banner at the top of the intro: the first tap starts the music
+   (phones need one), after that it's a sound on/off switch */
+function renderSoundBanner() {
+  const banner = $("soundBanner");
+  if (!banner) return;
+  const on = Music.isPlaying("quiz") && !Music.muted;
+  banner.classList.toggle("is-on", on);
+  banner.classList.toggle("is-waiting", !Music.isPlaying("quiz"));
+  banner.setAttribute("aria-pressed", String(on));
+  $("soundIcon").innerHTML = on ? ICON_SOUND_ON : ICON_SOUND_OFF;
+  $("soundText").textContent = !Music.isPlaying("quiz") ? "Tap for sound" : on ? "Sound on" : "Sound off";
+  $("soundHint").textContent = !Music.isPlaying("quiz") ? "Volume up · silent mode off" : on ? "Tap to mute" : "Tap to unmute";
+}
+
+function toggleSoundFromBanner() {
+  Music.unlock();
+  if (!Music.isPlaying("quiz")) { Music.setMuted(false); Music.play("quiz"); }
+  else Music.setMuted(!Music.muted);
+  renderSoundBanner();
+  renderMuteButton();
+}
 
 function renderMuteButton() {
   const btn = $("muteBtn");
@@ -758,7 +783,7 @@ const Scoring = (() => {
 $("introDuo").replaceChildren(...duo(showCard).childNodes);
 $("startBtn").addEventListener("click", () => {
   Music.unlock();
-  Music.play("quiz");
+  if (!Music.isPlaying("quiz")) Music.play("quiz"); // may already be playing from the sound banner
   renderMuteButton();
   showMuteButton(!!MUSIC.quiz?.src);
   state.current = 0;
@@ -769,4 +794,9 @@ $("backBtn").addEventListener("click", goBack);
 $("nextBtn").addEventListener("click", () => advance());
 $("revealCameosBtn").addEventListener("click", revealCameos);
 $("verdictBackBtn").addEventListener("click", () => show("result"));
-$("muteBtn").addEventListener("click", () => { Music.setMuted(!Music.muted); renderMuteButton(); });
+$("muteBtn").addEventListener("click", () => { Music.setMuted(!Music.muted); renderMuteButton(); renderSoundBanner(); });
+if (MUSIC.quiz?.src) {
+  $("soundBanner").hidden = false;
+  $("soundBanner").addEventListener("click", toggleSoundFromBanner);
+  renderSoundBanner();
+}

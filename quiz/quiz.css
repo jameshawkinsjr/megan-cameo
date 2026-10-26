@@ -359,6 +359,29 @@ button { font: inherit; color: inherit; }
 .calc__progress span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--rose), var(--champagne)); box-shadow: 0 0 14px rgba(232, 207, 160, 0.6); transition: width .2s linear; }
 .calc__pct { flex: none; margin: 8px 0 0; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; letter-spacing: 0.08em; color: var(--champagne); }
 
+/* Sound banner (top of the intro) */
+.sound-banner {
+  appearance: none; cursor: pointer; flex: none;
+  display: inline-flex; align-items: center; gap: 8px;
+  margin: 0 0 clamp(10px, 2svh, 18px); padding: 7px 14px 7px 10px;
+  border-radius: 999px; border: 1px solid var(--line-strong);
+  background: rgba(14, 12, 16, 0.6); color: var(--cream);
+  font-size: 13px; line-height: 1.2;
+  transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
+}
+.sound-banner:hover { background: var(--panel-strong); border-color: var(--champagne); }
+.sound-banner:active { transform: scale(0.97); }
+.sound-banner:focus-visible { outline: 2px solid var(--champagne); outline-offset: 3px; }
+.sound-banner__icon { display: inline-flex; color: var(--champagne); }
+.sound-banner__icon svg { width: 18px; height: 18px; }
+.sound-banner__text { font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-size: 12px; }
+.sound-banner__hint { color: var(--muted); font-size: 12px; padding-left: 8px; border-left: 1px solid var(--line); }
+.sound-banner.is-waiting { border-color: var(--champagne); box-shadow: 0 0 0 0 rgba(232, 207, 160, 0.5); animation: soundPing 2s ease-out infinite; }
+.sound-banner.is-on { border-color: var(--pink); }
+.sound-banner.is-on .sound-banner__icon { color: var(--pink); }
+@media (max-width: 359px) { .sound-banner__hint { display: none; } }
+@keyframes soundPing { 0% { box-shadow: 0 0 0 0 rgba(232, 207, 160, 0.45); } 70%, 100% { box-shadow: 0 0 0 12px rgba(232, 207, 160, 0); } }
+
 /* Music on/off */
 .mute-btn {
   position: fixed; z-index: 6; top: max(14px, env(safe-area-inset-top)); right: 14px;
