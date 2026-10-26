@@ -14,6 +14,7 @@
 
 <div class="backdrop" aria-hidden="true"></div>
 <canvas id="confetti" aria-hidden="true"></canvas>
+<button id="muteBtn" class="mute-btn" type="button" aria-pressed="false" aria-label="Mute music" hidden></button>
 
 <main id="app">
 
@@ -50,9 +51,17 @@
   </section>
 
   <!-- 2b. Dramatic pause -->
-  <section id="tally" class="screen screen--center" aria-labelledby="tallyTitle" hidden>
+  <section id="tally" class="screen" aria-labelledby="tallyTitle" hidden>
     <p class="eyebrow">Please stand by</p>
-    <h2 id="tallyTitle" class="display display--sm" tabindex="-1">The producers are reviewing the footage<span class="dots" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span></h2>
+    <h2 id="tallyTitle" class="display display--sm" tabindex="-1">Calculating your Bravo alter ego<span class="dots" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span></h2>
+    <p class="calc__status" id="calcStatus" aria-live="polite"></p>
+    <div class="calc__console" aria-hidden="true"><div class="calc__lines" id="calcLines"></div></div>
+    <div class="calc__meters" aria-hidden="true">
+      <div class="meter is-kyle"><span class="meter__label">Summer House energy</span><span class="meter__bar"><i id="meterA"></i></span><span class="meter__val" id="meterAVal"></span></div>
+      <div class="meter is-bethenny"><span class="meter__label">Housewife energy</span><span class="meter__bar"><i id="meterB"></i></span><span class="meter__val" id="meterBVal"></span></div>
+    </div>
+    <div class="calc__progress" id="calcProgress" role="progressbar" aria-label="Scoring progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="calcFill"></span></div>
+    <p class="calc__pct" id="calcPct" aria-hidden="true"></p>
   </section>
 
   <!-- 3. Results (filled in by app.js) -->

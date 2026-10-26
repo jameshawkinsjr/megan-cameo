@@ -61,6 +61,18 @@ export const CAMEOS = {
   },
 };
 
+/* ---------- Music + scoring screen ----------
+   Music can only start after a tap (phone rule), so the quiz theme starts when
+   she taps "Reveal my Bravo alter ego", loops through the questions, then fades
+   out as the scoring screen starts and the scoring track plays. Volumes are 0–1,
+   fades are in seconds. Set a `src` to "" to turn that track off. */
+export const MUSIC = {
+  quiz: { src: "audio/quiz-theme.mp3", volume: 0.5, fadeIn: 2.5, fadeOut: 1.5, loop: true },
+  scoring: { src: "audio/scoring.mp3", volume: 0.9, fadeIn: 0.1, fadeOut: 0.8 },
+};
+
+export const SCORING_SECONDS = 12; // how long the "very complicated math" screen runs
+
 /* ---------- Questions ----------
    `persona` decides who gets the point. Options are shown in the order listed
    here (deliberately alternated so the pattern isn't obvious). */

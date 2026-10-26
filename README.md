@@ -35,7 +35,10 @@ Every screen is sized to fit an iPhone screen without scrolling; images shrink t
 | Portraits | `quiz/images/kyle.jpg`, `quiz/images/bethenny.jpg` |
 | Show logos (intro) | `quiz/images/summer-house-logo.png`, `quiz/images/rhony-logo.png` |
 | Scoring logic | `quiz/scoring.js` |
+| Music (quiz theme, scoring track), scoring-screen length | `quiz/config.js` → `MUSIC`, `SCORING_SECONDS`; files in `quiz/audio/` |
 | UI / styles | `quiz/app.js`, `quiz/quiz.css` |
+
+**Music:** the quiz theme fades in when she taps the start button (phones need a tap before any sound), loops through the questions, and fades out as the 12-second "very complicated math" scoring screen starts its own track. A mute button shows in the corner while music plays.
 
 **Cameo videos:** for each person set `videoSrc` to a local file (e.g. `"../video/kyle.mp4"`, i.e. a file in the repo's `video/` folder) or a direct `.mp4` link to play it on the page, *or* set `externalUrl` to the Cameo share link to show a "Watch on Cameo" button. Unset = a "coming soon" card.
 
