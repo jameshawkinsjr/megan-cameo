@@ -45,7 +45,9 @@ export const PEOPLE = {
    - externalUrl: the Cameo share page link. Shows a "Watch on Cameo" button
                   that opens it (Cameo pages can't be embedded).
    You can set both: if videoSrc fails to load, the button is used instead.
-   Leave both empty and the card shows a tasteful "coming soon" state. */
+   Leave both empty and the card shows a tasteful "coming soon" state.
+   Cards with a videoSrc get a "Save video to my phone" button; `downloadName`
+   is the saved file's name (defaults to "<First name>-Cameo.mp4"). */
 export const CAMEOS = {
   kyle: {
     label: "YOUR SUMMER HOUSE CORRESPONDENT",

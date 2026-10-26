@@ -524,6 +524,11 @@ button { font: inherit; color: inherit; }
 .cameo__placeholder-text { margin: 0; color: var(--muted); font-size: 14px; max-width: 16em; line-height: 1.35; }
 .cameo__placeholder .btn { margin-top: 4px; min-height: 46px; padding: 12px 18px; font-size: 12px; }
 
+.cameo__save { align-self: center; margin-top: 10px; min-height: 44px; padding: 10px 18px; font-size: 11.5px; letter-spacing: 0.12em; }
+.cameo__save.is-ready { color: #22131a; border-color: transparent; background: linear-gradient(135deg, #f7e2bb 0%, var(--champagne) 40%, #f2b7cd 100%); animation: savePulse 1.6s ease-in-out infinite; }
+.cameo__save[aria-busy="true"] { cursor: progress; opacity: 0.85; }
+@keyframes savePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
 .pager { flex: none; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; color: var(--muted); font-size: 12.5px; }
 .pager__dot {
   appearance: none; cursor: pointer; width: 9px; height: 9px; padding: 0; border-radius: 50%;

@@ -302,7 +302,11 @@ function cameoCard(key, featured) {
   const p = PEOPLE[key];
   const c = CAMEOS[key] || {};
   const frame = h("div", { class: "cameo__frame" });
-  mountMedia(frame, key);
+  const save = c.videoSrc ? saveButton(key) : null;
+  mountMedia(frame, key, {
+    onPlay: () => save?.prefetch(),                 // start downloading in the background while she watches
+    onError: () => save?.button.remove(),           // nothing to save if the video can't load
+  });
   const media = h("div", { class: "cameo__media" }, frame);
   return h("article", { class: `cameo is-${key} ${featured ? "cameo--featured" : ""}`, "aria-labelledby": `cameo-${key}-name` },
     featured ? h("p", { class: "cameo__badge" }, "YOUR ALTER EGO") : null,
@@ -312,7 +316,75 @@ function cameoCard(key, featured) {
         h("p", { class: "cameo__label" }, c.label || ""),
         h("h3", { class: "cameo__name", id: `cameo-${key}-name` }, p.name),
         h("p", { class: "cameo__show" }, p.show))),
-    media);
+    media,
+    save?.button);
+}
+
+/* Save to phone: on iPhone the share sheet's "Save Video" puts it in Photos.
+   iOS only opens that sheet straight from a tap, so the file has to be fully
+   downloaded first; elsewhere it falls back to a normal file download. */
+function saveButton(key) {
+  const p = PEOPLE[key];
+  const c = CAMEOS[key];
+  const fileName = c.downloadName || `${p.firstName}-Cameo.mp4`;
+  const canShareFiles = typeof navigator.canShare === "function";
+  const label = "Save video to my phone";
+  const button = h("button", { class: "btn btn--ghost cameo__save", type: "button" }, label, h("span", { "aria-hidden": "true" }, " 📲"));
+  const status = (text) => { button.firstChild.textContent = text; };
+  let file = null, loading = null, waiting = false;
+
+  function prefetch() {
+    if (!canShareFiles || file) return Promise.resolve();
+    loading ??= (async () => {
+      const res = await fetch(c.videoSrc);
+      if (!res.ok || !res.body) throw new Error(res.status);
+      const total = Number(res.headers.get("content-length")) || 0;
+      const reader = res.body.getReader();
+      const chunks = [];
+      let received = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        received += value.length;
+        if (waiting && total) status(`Getting it ready… ${Math.floor((received / total) * 100)}%`);
+      }
+      const type = res.headers.get("content-type") || "video/mp4";
+      const f = new File(chunks, fileName, { type });
+      if (navigator.canShare({ files: [f] })) file = f;
+    })().catch(() => { loading = null; });
+    return loading;
+  }
+
+  function directDownload() {
+    const a = h("a", { href: c.videoSrc, download: fileName });
+    document.body.append(a); a.click(); a.remove();
+  }
+
+  button.addEventListener("click", async () => {
+    if (file) {
+      try { await navigator.share({ files: [file] }); return; }
+      catch (e) { if (e.name === "AbortError") return; } // she closed the share sheet
+    }
+    if (canShareFiles && !file) {
+      if (waiting) return;
+      waiting = true;
+      button.setAttribute("aria-busy", "true");
+      status("Getting it ready…");
+      await prefetch();
+      waiting = false;
+      button.removeAttribute("aria-busy");
+      if (file) { // the share sheet needs a fresh tap now that the file is ready
+        status("Ready! Tap to save");
+        button.classList.add("is-ready");
+        return;
+      }
+      status(label);
+    }
+    directDownload();
+  });
+
+  return { button, prefetch };
 }
 
 const safeUrl = (url) => {
@@ -322,7 +394,7 @@ const safeUrl = (url) => {
   } catch { return null; }
 };
 
-function mountMedia(box, key) {
+function mountMedia(box, key, { onPlay, onError } = {}) {
   const p = PEOPLE[key];
   const c = CAMEOS[key] || {};
   if (c.videoSrc) {
@@ -330,8 +402,8 @@ function mountMedia(box, key) {
       controls: true, playsinline: true, "webkit-playsinline": true, preload: "metadata",
       "aria-label": `Cameo video from ${p.name}`, poster: c.poster || null,
     });
-    video.addEventListener("error", () => box.replaceChildren(placeholder(key, { failed: true })), { once: true });
-    video.addEventListener("play", () => pauseVideos(video));
+    video.addEventListener("error", () => { box.replaceChildren(placeholder(key, { failed: true })); onError?.(); }, { once: true });
+    video.addEventListener("play", () => { pauseVideos(video); onPlay?.(); });
     video.src = c.videoSrc;
     box.append(video);
     return;
