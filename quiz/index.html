@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e0c10">
+<meta name="robots" content="noindex">
+<title>Kyle or Bethenny? A Bravo Investigation</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍸</text></svg>">
+<link rel="stylesheet" href="quiz.css">
+<script type="module" src="app.js"></script>
+</head>
+<body>
+
+<div class="backdrop" aria-hidden="true"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<main id="app">
+
+  <!-- 1. Introduction -->
+  <section id="intro" class="screen is-active" aria-labelledby="introTitle">
+    <p class="eyebrow">A Very Important Bravo Investigation</p>
+    <div class="duo duo--intro" id="introDuo"></div>
+    <h1 id="introTitle" class="display" tabindex="-1">Who are you <em>more</em> like?</h1>
+    <p class="subhead">Kyle Cooke <span class="or">or</span> Bethenny Frankel?</p>
+    <p class="lede">You think you know yourself. Bravo thinks otherwise.</p>
+    <p class="body-copy">Answer 8 questions to discover which reality-TV icon lives inside you. Your reputation is on the line.</p>
+    <button id="startBtn" class="btn btn--primary" type="button">Reveal my Bravo alter ego</button>
+    <p class="fine-print">No judgment. Okay, maybe a little judgment.</p>
+  </section>
+
+  <!-- 2. Quiz -->
+  <section id="quiz" class="screen" aria-labelledby="qText" hidden>
+    <div class="quiz-top">
+      <button id="backBtn" class="btn-back" type="button"><span aria-hidden="true">←</span> Back</button>
+      <p class="eyebrow eyebrow--count" id="qCount" aria-live="polite"></p>
+      <span class="quiz-top__spacer" aria-hidden="true"></span>
+    </div>
+    <div class="progress" id="progress" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="8">
+      <span class="progress__fill" id="progressFill"></span>
+    </div>
+    <div class="qcard" id="qcard">
+      <p class="qcard__kicker" id="qKicker"></p>
+      <h2 class="qcard__text" id="qText" tabindex="-1"></h2>
+      <div class="answers" id="answers" role="group" aria-labelledby="qText"></div>
+    </div>
+    <div class="quiz-foot">
+      <button id="nextBtn" class="btn btn--ghost" type="button" hidden>Keep my answer <span aria-hidden="true">→</span></button>
+    </div>
+  </section>
+
+  <!-- 2b. Dramatic pause -->
+  <section id="tally" class="screen screen--center" aria-labelledby="tallyTitle" hidden>
+    <p class="eyebrow">Please stand by</p>
+    <h2 id="tallyTitle" class="display display--sm" tabindex="-1">The producers are reviewing the footage<span class="dots" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span></h2>
+  </section>
+
+  <!-- 3. Results (filled in by app.js) -->
+  <section id="result" class="screen" aria-labelledby="resultTitle" hidden></section>
+
+  <!-- 4. Cameo finale (filled in by app.js) -->
+  <section id="cameos" class="screen" aria-labelledby="cameosTitle" hidden></section>
+
+</main>
+
+<noscript><p class="noscript">This quiz needs JavaScript turned on. Bravo would never.</p></noscript>
+</body>
+</html>

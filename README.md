@@ -17,3 +17,23 @@ Plain HTML, no build step, no dependencies. All sounds are generated in the brow
 - **Saving the video:** on iPhone the button opens the share sheet, and **Save Video** puts it straight into Photos. If that isn't available, it downloads to Files → Downloads instead.
 - **Privacy:** GitHub Pages on a free account requires a public repo, so the video file is publicly reachable by anyone who finds the URL/repo. If that matters, deploy the same folder to Vercel (drag-and-drop or `vercel deploy`) from a private repo instead. No code changes needed.
 - **Test locally:** `python3 -m http.server` in this folder, then open http://localhost:8000.
+
+---
+
+# 🍸 Kyle or Bethenny? Bravo personality quiz (`/quiz/`)
+
+A separate page at **`/quiz/`** (e.g. `https://jameshawkinsjr.github.io/megan-cameo/quiz/`). The birthday page at `/` is unchanged.
+
+Flow: intro → 8 questions (progress bar, back button, answers kept) → "producers are reviewing the footage" → result (Kyle, Bethenny, or Bravo Hybrid on a 4–4 tie) with score split → "Reveal your Cameo surprises" → both Cameo cards (the winner's first, marked YOUR ALTER EGO) → restart.
+
+| What | Where |
+| --- | --- |
+| Questions, results copy, names | `quiz/config.js` (`QUESTIONS`, `RESULTS`, `PEOPLE`) |
+| Cameo videos | `quiz/config.js` → `CAMEOS.kyle` / `CAMEOS.bethenny` |
+| Portraits | `quiz/images/kyle.jpg`, `quiz/images/bethenny.jpg` |
+| Scoring logic | `quiz/scoring.js` |
+| UI / styles | `quiz/app.js`, `quiz/quiz.css` |
+
+**Cameo videos:** for each person set `videoSrc` to a local file (e.g. `"../video/kyle.mp4"`, i.e. a file in the repo's `video/` folder) or a direct `.mp4` link to play it on the page, *or* set `externalUrl` to the Cameo share link to show a "Watch on Cameo" button. Unset = a "coming soon" card.
+
+**Tests:** `node --test` (scoring unit tests, no dependencies). The quiz uses ES modules, so open it through a server (`python3 -m http.server`, then http://localhost:8000/quiz/), not by double-clicking the file.
