@@ -2,92 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0e0c10">
 <meta name="robots" content="noindex">
-<title>Who Are You More Like? A Bravo Investigation</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍸</text></svg>">
-<link rel="stylesheet" href="quiz.css">
-<script type="module" src="app.js"></script>
+<title>Moved</title>
+<meta http-equiv="refresh" content="0; url=../">
+<link rel="canonical" href="../">
+<script>location.replace("../" + location.hash);</script>
 </head>
-<body>
-
-<div class="backdrop" aria-hidden="true"></div>
-<canvas id="confetti" aria-hidden="true"></canvas>
-<button id="muteBtn" class="mute-btn" type="button" aria-pressed="false" aria-label="Mute music" hidden></button>
-
-<main id="app">
-
-  <!-- 1. Introduction -->
-  <section id="intro" class="screen is-active" aria-labelledby="introTitle">
-    <button id="soundBanner" class="sound-banner" type="button" aria-pressed="false" hidden>
-      <span class="sound-banner__icon" id="soundIcon" aria-hidden="true"></span>
-      <span class="sound-banner__text" id="soundText">Tap for sound</span>
-      <span class="sound-banner__hint" id="soundHint">Volume up · silent mode off</span>
-    </button>
-    <p class="eyebrow">A Very Important Bravo Investigation</p>
-    <div class="stretch"><div class="duo duo--intro" id="introDuo"></div></div>
-    <h1 id="introTitle" class="display" tabindex="-1">Who are you <em>more</em> like?</h1>
-    <p class="subhead">Summer House <span class="or">or</span> Real Housewives?</p>
-    <p class="lede">You think you know yourself. Bravo thinks otherwise.</p>
-    <p class="body-copy">Answer 8 questions to discover which reality-TV icon lives inside you. Your reputation is on the line.</p>
-    <button id="startBtn" class="btn btn--primary" type="button">Reveal my Bravo alter ego</button>
-    <p class="fine-print">No judgment. Okay, maybe a little judgment.</p>
-  </section>
-
-  <!-- 2. Quiz -->
-  <section id="quiz" class="screen" aria-labelledby="qText" hidden>
-    <div class="quiz-top">
-      <button id="backBtn" class="btn-back" type="button"><span aria-hidden="true">←</span> Back</button>
-      <p class="eyebrow eyebrow--count" id="qCount" aria-live="polite"></p>
-      <span class="quiz-top__spacer" aria-hidden="true"></span>
-    </div>
-    <div class="progress" id="progress" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="8">
-      <span class="progress__fill" id="progressFill"></span>
-    </div>
-    <div class="qcard" id="qcard">
-      <p class="qcard__kicker" id="qKicker"></p>
-      <h2 class="qcard__text" id="qText" tabindex="-1"></h2>
-      <div class="answers" id="answers" role="group" aria-labelledby="qText"></div>
-    </div>
-    <div class="quiz-foot">
-      <button id="nextBtn" class="btn btn--ghost" type="button" hidden>Keep my answer <span aria-hidden="true">→</span></button>
-    </div>
-  </section>
-
-  <!-- 2b. Dramatic pause -->
-  <section id="tally" class="screen" aria-labelledby="tallyTitle" hidden>
-    <p class="eyebrow">Please stand by</p>
-    <h2 id="tallyTitle" class="display display--sm" tabindex="-1">Calculating your Bravo alter ego<span class="dots" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span></h2>
-    <p class="calc__status" id="calcStatus" aria-live="polite"></p>
-    <div class="calc__console" aria-hidden="true"><div class="calc__lines" id="calcLines"></div></div>
-    <div class="calc__meters" aria-hidden="true">
-      <div class="meter is-kyle"><span class="meter__label">Summer House energy</span><span class="meter__bar"><i id="meterA"></i></span><span class="meter__val" id="meterAVal"></span></div>
-      <div class="meter is-bethenny"><span class="meter__label">Housewife energy</span><span class="meter__bar"><i id="meterB"></i></span><span class="meter__val" id="meterBVal"></span></div>
-    </div>
-    <div class="calc__progress" id="calcProgress" role="progressbar" aria-label="Scoring progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="calcFill"></span></div>
-    <p class="calc__pct" id="calcPct" aria-hidden="true"></p>
-  </section>
-
-  <!-- 3. Results (filled in by app.js) -->
-  <section id="result" class="screen reveal" aria-labelledby="resultTitle" hidden></section>
-
-  <!-- 3b. Teaser for the Cameos -->
-  <section id="verdict" class="screen" aria-labelledby="verdictTitle" hidden>
-    <div class="teaser">
-      <p class="eyebrow">Your verdict is in</p>
-      <h2 id="verdictTitle" tabindex="-1">Hear it from the professionals.</h2>
-      <p>Your Bravo alter ego has been identified. But we thought you deserved a second opinion.</p>
-      <button id="revealCameosBtn" class="btn btn--primary" type="button">Reveal your Cameo surprises</button>
-    </div>
-    <button id="verdictBackBtn" class="link-btn" type="button">← Back to my results</button>
-  </section>
-
-  <!-- 4. Cameo finale (filled in by app.js) -->
-  <section id="cameos" class="screen" aria-labelledby="cameosTitle" hidden></section>
-
-</main>
-
-<noscript><p class="noscript">This quiz needs JavaScript turned on. Bravo would never.</p></noscript>
+<body style="background:#0e0c10;color:#f7efe5;font-family:-apple-system,sans-serif;text-align:center;padding:40px 20px">
+<p>The quiz has moved. <a href="../" style="color:#e8cfa0">Take me there</a></p>
 </body>
 </html>

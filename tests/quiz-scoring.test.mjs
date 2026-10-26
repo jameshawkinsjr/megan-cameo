@@ -1,8 +1,8 @@
 // Run from the repo root with: node --test
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { QUESTIONS, RESULTS, PEOPLE, CAMEOS } from "../quiz/config.js";
-import { scoreQuiz, formatPercent } from "../quiz/scoring.js";
+import { QUESTIONS, RESULTS, PEOPLE, CAMEOS } from "../config.js";
+import { scoreQuiz, formatPercent } from "../scoring.js";
 
 // Answer every question with the option belonging to the persona chosen for that slot
 const pick = (personas) => personas.map((p, i) => QUESTIONS[i].options.findIndex((o) => o.persona === p));

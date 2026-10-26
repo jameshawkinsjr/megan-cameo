@@ -3,662 +3,91 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#14062b">
+<meta name="theme-color" content="#0e0c10">
 <meta name="robots" content="noindex">
-<title>A Surprise For You 🎁</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎁</text></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎁</text></svg>">
-<style>
-  :root {
-    --bg-1: #14062b;
-    --bg-2: #2a0b4d;
-    --bg-3: #4a1460;
-    --gold: #ffd166;
-    --pink: #ff5fa2;
-    --text: #fff7fb;
-    --muted: rgba(255, 247, 251, 0.72);
-  }
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body {
-    margin: 0; height: 100%; overflow: hidden;
-    background: radial-gradient(ellipse at 50% 110%, var(--bg-3) 0%, var(--bg-2) 45%, var(--bg-1) 100%);
-    background-color: var(--bg-1);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    -webkit-user-select: none; user-select: none;
-    overscroll-behavior: none;
-  }
-  canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-  #fx { z-index: 1; }
-  #emoji { z-index: 3; }
-
-  .screen {
-    position: fixed; inset: 0; z-index: 2;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: max(24px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
-    text-align: center;
-    transition: opacity .8s ease, transform .8s ease;
-  }
-  .hidden { opacity: 0; pointer-events: none; }
-  [hidden] { display: none !important; }
-
-  /* ---------- Intro ---------- */
-  #intro { z-index: 5; gap: 18px; }
-  #intro .envelope { font-size: 92px; animation: wiggle 2.4s ease-in-out infinite; filter: drop-shadow(0 10px 30px rgba(255, 95, 162, .45)); }
-  #intro h1 { margin: 0; font-size: clamp(26px, 7vw, 40px); font-weight: 800; letter-spacing: -0.02em; }
-  #intro p { margin: 0; color: var(--muted); font-size: 17px; }
-  .btn {
-    appearance: none; border: 0; cursor: pointer;
-    font: inherit; font-weight: 800; font-size: 19px; color: #2a0b4d;
-    padding: 16px 30px; border-radius: 999px;
-    background: linear-gradient(135deg, var(--gold), #ffb3d1);
-    box-shadow: 0 10px 30px rgba(255, 95, 162, .45), inset 0 -3px 0 rgba(0,0,0,.12);
-    transition: transform .15s ease;
-  }
-  .btn:active { transform: scale(.96); }
-  #openBtn { margin-top: 10px; animation: pulse 1.6s ease-in-out infinite; }
-  .sound-hint { font-size: 14px !important; opacity: .8; }
-
-  /* ---------- Celebration title ---------- */
-  #title {
-    z-index: 2; pointer-events: none;
-    justify-content: center;
-    transition: transform 1.2s cubic-bezier(.2,.8,.2,1), opacity .8s ease;
-  }
-  #title.settled { transform: translateY(-31vh) scale(.62); }
-  #title h2 {
-    margin: 0; line-height: 1.02;
-    font-size: clamp(48px, 15vw, 120px); font-weight: 900; letter-spacing: -0.03em;
-  }
-  #title h2 .line { display: block; white-space: nowrap; }
-  #title h2 .ch {
-    display: inline-block;
-    background: linear-gradient(180deg, #fff 0%, var(--gold) 55%, #ff8fbf 100%);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-    filter: drop-shadow(0 4px 0 rgba(120, 20, 90, .55)) drop-shadow(0 0 22px rgba(255, 209, 102, .35));
-    opacity: 0; transform: translateY(60px) scale(.3) rotate(-12deg);
-  }
-  #title.show h2 .ch { animation: popIn .7s cubic-bezier(.2, 1.6, .4, 1) forwards, bob 2.2s ease-in-out infinite; }
-  #title .sub {
-    margin-top: 14px; font-size: clamp(18px, 5vw, 26px); font-weight: 700; color: var(--muted);
-    opacity: 0; transition: opacity 1s ease 1.6s;
-  }
-  #title.show .sub { opacity: 1; }
-
-  /* ---------- Gift ---------- */
-  #giftStage { z-index: 4; gap: 26px; padding-top: 22vh; }
-  #giftStage .prompt { font-size: 20px; font-weight: 700; color: var(--text); margin: 0; animation: pulseText 1.8s ease-in-out infinite; }
-  .gift {
-    position: relative; width: 190px; height: 190px; cursor: pointer;
-    animation: giftIn .9s cubic-bezier(.2, 1.5, .4, 1) both, giftBounce 1.4s ease-in-out .9s infinite;
-    filter: drop-shadow(0 22px 30px rgba(0,0,0,.45));
-  }
-  .gift .box {
-    position: absolute; left: 12px; right: 12px; bottom: 0; height: 120px; border-radius: 10px;
-    background: linear-gradient(90deg, transparent 42%, var(--gold) 42%, var(--gold) 58%, transparent 58%),
-                linear-gradient(160deg, #ff7eb6, #e2337f);
-  }
-  .gift .lid {
-    position: absolute; left: 0; right: 0; top: 42px; height: 40px; border-radius: 10px;
-    background: linear-gradient(90deg, transparent 42%, #ffe08f 42%, #ffe08f 58%, transparent 58%),
-                linear-gradient(160deg, #ff9ac7, #ef4b92);
-    box-shadow: 0 6px 0 rgba(120, 10, 60, .25);
-    transform-origin: 50% 100%;
-  }
-  .gift .bow { position: absolute; left: 50%; top: -30px; width: 0; height: 0; }
-  .gift .bow::before, .gift .bow::after {
-    content: ""; position: absolute; top: 0; width: 46px; height: 34px;
-    border: 9px solid var(--gold); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-  }
-  .gift .bow::before { right: 2px; transform: rotate(-24deg); }
-  .gift .bow::after  { left: 2px;  transform: rotate(24deg); }
-  .gift .knot { position: absolute; left: 50%; top: 20px; width: 20px; height: 20px; margin-left: -10px; border-radius: 6px; background: #ffc53d; }
-  .gift.opening { animation: shake .5s ease-in-out both; }
-  .gift.open .lid { animation: lidOff .9s cubic-bezier(.3, .1, .3, 1) forwards; }
-  .gift.open .box { animation: boxAway .9s ease .25s forwards; }
-
-  /* ---------- Video ---------- */
-  #videoStage { z-index: 4; gap: 18px; padding-top: max(18vh, 120px); }
-  .video-card {
-    position: relative; width: min(92vw, 420px);
-    border-radius: 22px; overflow: hidden; background: #000;
-    box-shadow: 0 0 0 3px rgba(255, 209, 102, .7), 0 25px 60px rgba(0,0,0,.55), 0 0 60px rgba(255, 95, 162, .35);
-    transform: scale(.85); transition: transform .8s cubic-bezier(.2, 1.4, .4, 1);
-  }
-  #videoStage:not(.hidden) .video-card { transform: scale(1); }
-  video { display: block; width: 100%; max-height: 64vh; background: #000; }
-  .play-overlay {
-    position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
-    border: 0; cursor: pointer; color: var(--text); font: inherit; font-weight: 800; font-size: 18px;
-    background: radial-gradient(circle at 50% 45%, rgba(74, 20, 96, .55), rgba(20, 6, 43, .88));
-  }
-  .play-overlay .circle {
-    width: 92px; height: 92px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(135deg, var(--gold), var(--pink));
-    box-shadow: 0 10px 30px rgba(255, 95, 162, .6);
-    animation: pulse 1.6s ease-in-out infinite;
-  }
-  .play-overlay .circle::after {
-    content: ""; margin-left: 8px;
-    border-style: solid; border-width: 20px 0 20px 32px; border-color: transparent transparent transparent #fff;
-  }
-  #saveBtn { opacity: 0; transform: translateY(10px); transition: opacity .6s ease, transform .6s ease; }
-  #saveBtn.show { opacity: 1; transform: none; }
-  #saveBtn.nudge { animation: pulse 1.6s ease-in-out infinite; }
-  .save-help { margin: 0; max-width: 340px; font-size: 14px; color: var(--muted); line-height: 1.4; }
-  .error { color: #ffd1e3; font-size: 15px; max-width: 320px; padding: 24px; }
-
-  /* ---------- Keyframes ---------- */
-  @keyframes popIn { to { opacity: 1; transform: none; } }
-  @keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -6px; } }
-  @keyframes wiggle { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-10deg); } 40% { transform: rotate(8deg); } 60% { transform: rotate(-4deg); } 80% { transform: rotate(2deg); } }
-  @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
-  @keyframes pulseText { 0%, 100% { opacity: .75; } 50% { opacity: 1; } }
-  @keyframes giftIn { from { opacity: 0; transform: scale(.2) rotate(-20deg); } to { opacity: 1; transform: none; } }
-  @keyframes giftBounce { 0%, 100% { translate: 0 0; } 50% { translate: 0 -14px; } }
-  @keyframes shake { 0%, 100% { rotate: 0deg; } 20% { rotate: -9deg; } 40% { rotate: 8deg; } 60% { rotate: -6deg; } 80% { rotate: 4deg; } }
-  @keyframes lidOff { to { transform: translate(60px, -260px) rotate(50deg); opacity: 0; } }
-  @keyframes boxAway { to { transform: scale(.4) translateY(40px); opacity: 0; } }
-
-  @media (prefers-reduced-motion: reduce) {
-    #title h2 .ch { animation-duration: .01s !important; }
-  }
-</style>
+<title>Who Are You More Like? A Bravo Investigation</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍸</text></svg>">
+<link rel="stylesheet" href="quiz.css">
+<script type="module" src="app.js"></script>
 </head>
 <body>
 
-<canvas id="fx"></canvas>
-<canvas id="emoji"></canvas>
+<div class="backdrop" aria-hidden="true"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<button id="muteBtn" class="mute-btn" type="button" aria-pressed="false" aria-label="Mute music" hidden></button>
 
-<!-- 1. Tap to open (needed so the browser lets us play sound) -->
-<section id="intro" class="screen">
-  <div class="envelope">💌</div>
-  <h1 id="introTitle">Something special for you</h1>
-  <p>Turn your sound up 🔊</p>
-  <button id="openBtn" class="btn" type="button">Tap to open ✨</button>
-  <p class="sound-hint">(and flip off silent mode!)</p>
-</section>
+<main id="app">
 
-<!-- 2. The big reveal -->
-<section id="title" class="screen hidden" aria-live="polite">
-  <h2 id="titleText"></h2>
-  <div class="sub" id="subText"></div>
-</section>
-
-<!-- 3. The present -->
-<section id="giftStage" class="screen hidden">
-  <button class="gift" id="gift" type="button" aria-label="Open your present" style="background:none;border:0;padding:0">
-    <span class="box"></span>
-    <span class="lid"><span class="bow"></span><span class="knot"></span></span>
-  </button>
-  <p class="prompt">Tap to open your present 🎁</p>
-</section>
-
-<!-- 4. The video -->
-<section id="videoStage" class="screen hidden">
-  <div class="video-card">
-    <video id="video" playsinline webkit-playsinline preload="metadata"></video>
-    <button class="play-overlay" id="playBtn" type="button" aria-label="Play your video">
-      <span class="circle"></span>
-      <span>Press play 💖</span>
+  <!-- 1. Introduction -->
+  <section id="intro" class="screen is-active" aria-labelledby="introTitle">
+    <button id="soundBanner" class="sound-banner" type="button" aria-pressed="false" hidden>
+      <span class="sound-banner__icon" id="soundIcon" aria-hidden="true"></span>
+      <span class="sound-banner__text" id="soundText">Tap for sound</span>
+      <span class="sound-banner__hint" id="soundHint">Volume up · silent mode off</span>
     </button>
-  </div>
-  <button id="saveBtn" class="btn" type="button" hidden>Save video to my phone 📲</button>
-  <p class="save-help" id="saveHelp" hidden></p>
-</section>
+    <p class="eyebrow">A Very Important Bravo Investigation</p>
+    <div class="stretch"><div class="duo duo--intro" id="introDuo"></div></div>
+    <h1 id="introTitle" class="display" tabindex="-1">Who are you <em>more</em> like?</h1>
+    <p class="subhead">Summer House <span class="or">or</span> Real Housewives?</p>
+    <p class="lede">You think you know yourself. Bravo thinks otherwise.</p>
+    <p class="body-copy">Answer 8 questions to discover which reality-TV icon lives inside you. Your reputation is on the line.</p>
+    <button id="startBtn" class="btn btn--primary" type="button">Reveal my Bravo alter ego</button>
+    <p class="fine-print">No judgment. Okay, maybe a little judgment.</p>
+  </section>
 
-<script>
-/* ============================================================
-   Edit these to personalize the page
-   ============================================================ */
-const CONFIG = {
-  name: "Megan",
-  subtitle: "🎂 October 27 🎂",
-  videoSrc: "video/cameo.mp4",          // put the Cameo file here
-  downloadName: "Megan-Birthday-Cameo.mp4",
-  celebrationSeconds: 8,                 // how long the big party lasts before the present shows up
-};
+  <!-- 2. Quiz -->
+  <section id="quiz" class="screen" aria-labelledby="qText" hidden>
+    <div class="quiz-top">
+      <button id="backBtn" class="btn-back" type="button"><span aria-hidden="true">←</span> Back</button>
+      <p class="eyebrow eyebrow--count" id="qCount" aria-live="polite"></p>
+      <span class="quiz-top__spacer" aria-hidden="true"></span>
+    </div>
+    <div class="progress" id="progress" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="8">
+      <span class="progress__fill" id="progressFill"></span>
+    </div>
+    <div class="qcard" id="qcard">
+      <p class="qcard__kicker" id="qKicker"></p>
+      <h2 class="qcard__text" id="qText" tabindex="-1"></h2>
+      <div class="answers" id="answers" role="group" aria-labelledby="qText"></div>
+    </div>
+    <div class="quiz-foot">
+      <button id="nextBtn" class="btn btn--ghost" type="button" hidden>Keep my answer <span aria-hidden="true">→</span></button>
+    </div>
+  </section>
 
-/* ============================================================
-   Setup
-   ============================================================ */
-const $ = (id) => document.getElementById(id);
-const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  <!-- 2b. Dramatic pause -->
+  <section id="tally" class="screen" aria-labelledby="tallyTitle" hidden>
+    <p class="eyebrow">Please stand by</p>
+    <h2 id="tallyTitle" class="display display--sm" tabindex="-1">Calculating your Bravo alter ego<span class="dots" aria-hidden="true"><i>.</i><i>.</i><i>.</i></span></h2>
+    <p class="calc__status" id="calcStatus" aria-live="polite"></p>
+    <div class="calc__console" aria-hidden="true"><div class="calc__lines" id="calcLines"></div></div>
+    <div class="calc__meters" aria-hidden="true">
+      <div class="meter is-kyle"><span class="meter__label">Summer House energy</span><span class="meter__bar"><i id="meterA"></i></span><span class="meter__val" id="meterAVal"></span></div>
+      <div class="meter is-bethenny"><span class="meter__label">Housewife energy</span><span class="meter__bar"><i id="meterB"></i></span><span class="meter__val" id="meterBVal"></span></div>
+    </div>
+    <div class="calc__progress" id="calcProgress" role="progressbar" aria-label="Scoring progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="calcFill"></span></div>
+    <p class="calc__pct" id="calcPct" aria-hidden="true"></p>
+  </section>
 
-$("introTitle").textContent = `${CONFIG.name}, something special for you`;
-$("subText").textContent = CONFIG.subtitle;
-document.title = `Happy Birthday ${CONFIG.name}! 🎉`;
+  <!-- 3. Results (filled in by app.js) -->
+  <section id="result" class="screen reveal" aria-labelledby="resultTitle" hidden></section>
 
-// Build the title one letter at a time so each letter can pop in
-(function buildTitle() {
-  const lines = ["Happy", "Birthday,", `${CONFIG.name}!`];
-  const h2 = $("titleText");
-  let i = 0;
-  for (const text of lines) {
-    const line = document.createElement("span");
-    line.className = "line";
-    for (const c of text) {
-      const s = document.createElement("span");
-      s.className = "ch";
-      s.textContent = c;
-      s.style.animationDelay = `${0.35 + i * 0.07}s, ${1.4 + i * 0.09}s`;
-      line.appendChild(s);
-      i++;
-    }
-    h2.appendChild(line);
-  }
-})();
+  <!-- 3b. Teaser for the Cameos -->
+  <section id="verdict" class="screen" aria-labelledby="verdictTitle" hidden>
+    <div class="teaser">
+      <p class="eyebrow">Your verdict is in</p>
+      <h2 id="verdictTitle" tabindex="-1">Hear it from the professionals.</h2>
+      <p>Your Bravo alter ego has been identified. But we thought you deserved a second opinion.</p>
+      <button id="revealCameosBtn" class="btn btn--primary" type="button">Reveal your Cameo surprises</button>
+    </div>
+    <button id="verdictBackBtn" class="link-btn" type="button">← Back to my results</button>
+  </section>
 
-/* ============================================================
-   Canvas: fireworks (with trails) + emojis/confetti (no trails)
-   ============================================================ */
-const fx = $("fx"), fxCtx = fx.getContext("2d");
-const em = $("emoji"), emCtx = em.getContext("2d");
-let W = 0, H = 0, DPR = 1;
-function resize() {
-  DPR = Math.min(window.devicePixelRatio || 1, 2);
-  W = innerWidth; H = innerHeight;
-  for (const c of [fx, em]) { c.width = W * DPR; c.height = H * DPR; }
-  fxCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  emCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
-}
-addEventListener("resize", resize);
-resize();
+  <!-- 4. Cameo finale (filled in by app.js) -->
+  <section id="cameos" class="screen" aria-labelledby="cameosTitle" hidden></section>
 
-const rand = (a, b) => a + Math.random() * (b - a);
-const pick = (arr) => arr[(Math.random() * arr.length) | 0];
-const EMOJIS = ["🎉", "🎂", "🥳", "🎈", "🎁", "💖", "✨", "🍾", "🥂", "🌟", "💐", "🎊", "😘", "👑", "🦄", "🍰", "💃", "🪅"];
-const CONFETTI = ["#ffd166", "#ff5fa2", "#7bdff2", "#b2f7ef", "#c77dff", "#ff9f1c", "#ffffff", "#80ffdb"];
+</main>
 
-const rockets = [], sparks = [], floaters = [];
-
-function launchRocket(x) {
-  rockets.push({
-    x: x ?? rand(W * 0.12, W * 0.88), y: H + 10,
-    vx: rand(-0.6, 0.6), vy: -rand(H * 0.0135, H * 0.0175) - 6,
-    hue: rand(0, 360), targetY: rand(H * 0.12, H * 0.45),
-  });
-}
-function explode(x, y, hue, big = false) {
-  const n = big ? 140 : rand(70, 110);
-  const kind = Math.random();
-  for (let i = 0; i < n; i++) {
-    const a = (i / n) * Math.PI * 2 + rand(-0.05, 0.05);
-    const sp = kind < 0.3 ? rand(4.5, 5.2) : rand(1, big ? 8 : 6.5); // sometimes a perfect ring
-    sparks.push({
-      x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp,
-      life: 1, decay: rand(0.008, 0.016),
-      hue: kind > 0.75 ? rand(0, 360) : hue + rand(-15, 15),
-      size: rand(1.4, 2.6), twinkle: Math.random() < 0.3,
-    });
-  }
-  Sound.boom();
-}
-function throwEmoji(x, y, opts = {}) {
-  floaters.push({
-    kind: "emoji", ch: pick(EMOJIS),
-    x, y, vx: opts.vx ?? rand(-5, 5), vy: opts.vy ?? -rand(12, 20),
-    g: opts.g ?? 0.32, rot: rand(-0.5, 0.5), vr: rand(-0.12, 0.12),
-    size: rand(30, 58), life: 1,
-  });
-}
-function rainEmoji() {
-  floaters.push({
-    kind: "emoji", ch: pick(EMOJIS),
-    x: rand(0, W), y: -50, vx: rand(-1, 1), vy: rand(2, 4), g: 0.03,
-    rot: rand(-0.5, 0.5), vr: rand(-0.04, 0.04), size: rand(26, 46), life: 1,
-  });
-}
-function confettiCannon(x, y, angle, count = 120, power = 22) {
-  for (let i = 0; i < count; i++) {
-    const a = angle + rand(-0.35, 0.35), sp = rand(power * 0.4, power);
-    floaters.push({
-      kind: "confetti", color: pick(CONFETTI),
-      x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, g: 0.28,
-      rot: rand(0, 6), vr: rand(-0.3, 0.3), w: rand(6, 11), h: rand(10, 18),
-      flip: rand(0, 6), life: 1,
-    });
-  }
-}
-
-let last = performance.now();
-function frame(now) {
-  const dt = Math.min((now - last) / 16.67, 3); // normalize to 60fps steps
-  last = now;
-
-  // Fireworks layer: fade previous frame for trails
-  fxCtx.globalCompositeOperation = "destination-out";
-  fxCtx.fillStyle = "rgba(0,0,0,0.22)";
-  fxCtx.fillRect(0, 0, W, H);
-  fxCtx.globalCompositeOperation = "lighter";
-
-  for (let i = rockets.length - 1; i >= 0; i--) {
-    const r = rockets[i];
-    r.x += r.vx * dt; r.y += r.vy * dt; r.vy += 0.18 * dt;
-    fxCtx.fillStyle = `hsl(${r.hue},100%,75%)`;
-    fxCtx.beginPath(); fxCtx.arc(r.x, r.y, 2.4, 0, 7); fxCtx.fill();
-    if (r.y <= r.targetY || r.vy >= -1) { explode(r.x, r.y, r.hue); rockets.splice(i, 1); }
-  }
-  for (let i = sparks.length - 1; i >= 0; i--) {
-    const s = sparks[i];
-    s.vx *= Math.pow(0.975, dt); s.vy = s.vy * Math.pow(0.975, dt) + 0.06 * dt;
-    s.x += s.vx * dt; s.y += s.vy * dt; s.life -= s.decay * dt;
-    if (s.life <= 0) { sparks.splice(i, 1); continue; }
-    const a = s.twinkle ? s.life * (Math.random() < 0.5 ? 1 : 0.2) : s.life;
-    fxCtx.fillStyle = `hsla(${s.hue},100%,${55 + s.life * 25}%,${a})`;
-    fxCtx.beginPath(); fxCtx.arc(s.x, s.y, s.size, 0, 7); fxCtx.fill();
-  }
-
-  // Emoji + confetti layer: fully redrawn each frame
-  emCtx.clearRect(0, 0, W, H);
-  emCtx.textAlign = "center"; emCtx.textBaseline = "middle";
-  for (let i = floaters.length - 1; i >= 0; i--) {
-    const f = floaters[i];
-    f.vy += f.g * dt;
-    if (f.kind === "confetti") { f.vx *= Math.pow(0.97, dt); f.vy = Math.min(f.vy, 3.2); f.flip += 0.15 * dt; }
-    f.x += f.vx * dt; f.y += f.vy * dt; f.rot += f.vr * dt;
-    if (f.y > H + 80 || f.x < -100 || f.x > W + 100) { floaters.splice(i, 1); continue; }
-    emCtx.save();
-    emCtx.translate(f.x, f.y); emCtx.rotate(f.rot);
-    if (f.kind === "emoji") {
-      emCtx.font = `${f.size}px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif`;
-      emCtx.fillText(f.ch, 0, 0);
-    } else {
-      emCtx.scale(1, Math.cos(f.flip));
-      emCtx.fillStyle = f.color;
-      emCtx.fillRect(-f.w / 2, -f.h / 2, f.w, f.h);
-    }
-    emCtx.restore();
-  }
-  requestAnimationFrame(frame);
-}
-requestAnimationFrame(frame);
-
-/* ============================================================
-   Sound: everything is synthesized, no audio files needed
-   ============================================================ */
-const Sound = (() => {
-  let ctx, master, lastBoom = 0;
-  const note = (n) => 440 * Math.pow(2, (n - 69) / 12); // MIDI -> Hz
-
-  function init() {
-    if (ctx) return;
-    // Lets sound play even when the iPhone ring/silent switch is on (Safari 16.4+)
-    try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return;
-    ctx = new AC();
-    const comp = ctx.createDynamicsCompressor();
-    comp.threshold.value = -14; comp.ratio.value = 6;
-    master = ctx.createGain(); master.gain.value = 0.8;
-    master.connect(comp).connect(ctx.destination);
-    // iOS unlock: play one silent buffer inside the tap
-    const b = ctx.createBufferSource(); b.buffer = ctx.createBuffer(1, 1, 22050); b.connect(master); b.start(0);
-    ctx.resume();
-    loadHorn();
-  }
-
-  // Brass-ish voice: detuned saws through an opening low-pass filter
-  function brass(freq, t, dur, vol = 0.18) {
-    const g = ctx.createGain(), f = ctx.createBiquadFilter();
-    f.type = "lowpass"; f.Q.value = 2;
-    f.frequency.setValueAtTime(freq * 1.5, t);
-    f.frequency.linearRampToValueAtTime(freq * 6, t + 0.06);
-    f.frequency.exponentialRampToValueAtTime(freq * 3, t + dur);
-    g.gain.setValueAtTime(0.0001, t);
-    g.gain.exponentialRampToValueAtTime(vol, t + 0.04);
-    g.gain.setValueAtTime(vol * 0.85, t + Math.max(dur - 0.08, 0.05));
-    g.gain.exponentialRampToValueAtTime(0.0001, t + dur + 0.12);
-    f.connect(g).connect(master);
-    for (const d of [-7, 0, 7]) {
-      const o = ctx.createOscillator();
-      o.type = "sawtooth"; o.frequency.value = freq; o.detune.value = d;
-      // a little vibrato on longer notes
-      if (dur > 0.5) {
-        const l = ctx.createOscillator(), lg = ctx.createGain();
-        l.frequency.value = 5.5; lg.gain.value = 9;
-        l.connect(lg).connect(o.detune); l.start(t + 0.2); l.stop(t + dur + 0.2);
-      }
-      o.connect(f); o.start(t); o.stop(t + dur + 0.2);
-    }
-  }
-  const chord = (notes, t, dur, vol) => notes.forEach((n) => brass(note(n), t, dur, vol));
-
-  let noiseBuf;
-  function noise() {
-    if (!noiseBuf) {
-      noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 1.5, ctx.sampleRate);
-      const d = noiseBuf.getChannelData(0);
-      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-    }
-    const s = ctx.createBufferSource(); s.buffer = noiseBuf; return s;
-  }
-
-  // Firework boom: low thump + noise burst + little crackles
-  function boom() {
-    if (!ctx) return;
-    const t = ctx.currentTime;
-    if (t - lastBoom < 0.12) return; // don't stack too many
-    lastBoom = t;
-    const n = noise(), f = ctx.createBiquadFilter(), g = ctx.createGain();
-    f.type = "lowpass"; f.frequency.setValueAtTime(rand(900, 1600), t); f.frequency.exponentialRampToValueAtTime(120, t + 1);
-    g.gain.setValueAtTime(rand(0.35, 0.55), t); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.1);
-    n.connect(f).connect(g).connect(master); n.start(t); n.stop(t + 1.2);
-    const o = ctx.createOscillator(), og = ctx.createGain();
-    o.frequency.setValueAtTime(110, t); o.frequency.exponentialRampToValueAtTime(40, t + 0.3);
-    og.gain.setValueAtTime(0.5, t); og.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
-    o.connect(og).connect(master); o.start(t); o.stop(t + 0.4);
-    for (let i = 0; i < 6; i++) {
-      const ct = t + rand(0.25, 0.9), c = noise(), cf = ctx.createBiquadFilter(), cg = ctx.createGain();
-      cf.type = "highpass"; cf.frequency.value = 3000;
-      cg.gain.setValueAtTime(0.12, ct); cg.gain.exponentialRampToValueAtTime(0.0001, ct + 0.03);
-      c.connect(cf).connect(cg).connect(master); c.start(ct, rand(0, 1)); c.stop(ct + 0.04);
-    }
-  }
-
-  // Real airhorn sample, loaded when she taps "open"
-  let hornBuf, hornReady;
-  function loadHorn() {
-    hornReady = fetch("video/airhorn.mp3")
-      .then((r) => r.arrayBuffer())
-      .then((ab) => new Promise((res, rej) => ctx.decodeAudioData(ab, res, rej)))
-      .then((buf) => { hornBuf = buf; })
-      .catch(() => {});
-  }
-
-  // Airhorn blast, then Happy Birthday on brass
-  async function celebrate() {
-    if (!ctx) return;
-    await hornReady;
-    const t0 = ctx.currentTime + 0.05;
-    let h = t0;
-    if (hornBuf) {
-      const s = ctx.createBufferSource(), g = ctx.createGain();
-      s.buffer = hornBuf; g.gain.value = 1;
-      s.connect(g).connect(master); s.start(t0);
-      h = t0 + hornBuf.duration - 0.4; // song kicks in as the blast fades
-    }
-    // Happy Birthday (3/4 time), with a simple bass
-    const beat = 0.36;
-    const song = [
-      [67,.75],[67,.25],[69,1],[67,1],[72,1],[71,2],
-      [67,.75],[67,.25],[69,1],[67,1],[74,1],[72,2],
-      [67,.75],[67,.25],[79,1],[76,1],[72,1],[71,1],[69,2],
-      [77,.75],[77,.25],[76,1],[72,1],[74,1],[72,3],
-    ];
-    const bass = [[48,3],[43,3],[43,3],[48,3],[48,3],[53,3],[48,3],[43,1.5],[48,3]];
-    let t = h + 0.4;
-    const start = t;
-    for (const [n, d] of song) { brass(note(n), t, d * beat * 0.92, 0.16); t += d * beat; }
-    t = start;
-    for (const [n, d] of bass) { brass(note(n), t, d * beat * 0.9, 0.12); t += d * beat; }
-  }
-
-  // Sparkly "ta-da" when the present opens
-  function tada() {
-    if (!ctx) return;
-    const t = ctx.currentTime + 0.02;
-    [72, 76, 79, 84, 88, 91].forEach((n, i) => {
-      const o = ctx.createOscillator(), g = ctx.createGain();
-      o.type = "triangle"; o.frequency.value = note(n);
-      g.gain.setValueAtTime(0.0001, t + i * 0.06);
-      g.gain.exponentialRampToValueAtTime(0.18, t + i * 0.06 + 0.02);
-      g.gain.exponentialRampToValueAtTime(0.0001, t + i * 0.06 + 0.9);
-      o.connect(g).connect(master); o.start(t + i * 0.06); o.stop(t + i * 0.06 + 1);
-    });
-    chord([60, 64, 67, 72], t + 0.35, 0.9, 0.12);
-  }
-
-  // Fade all the party noise out (e.g. when the video starts)
-  function hush() {
-    if (!ctx) return;
-    master.gain.cancelScheduledValues(ctx.currentTime);
-    master.gain.setTargetAtTime(0, ctx.currentTime, 0.15);
-    setTimeout(() => ctx.suspend(), 1200);
-  }
-
-  return { init, celebrate, boom, tada, hush };
-})();
-
-/* ============================================================
-   The show
-   ============================================================ */
-let ambient = null;
-
-$("openBtn").addEventListener("click", () => {
-  Sound.init();
-  if (navigator.vibrate) navigator.vibrate([60, 40, 60]);
-  $("intro").classList.add("hidden");
-  setTimeout(startParty, 250);
-}, { once: true });
-
-function startParty() {
-  Sound.celebrate();
-  $("title").classList.remove("hidden");
-  $("title").classList.add("show");
-
-  // Opening barrage
-  confettiCannon(0, H, -Math.PI / 3, reduceMotion ? 40 : 140);
-  confettiCannon(W, H, -Math.PI * 2 / 3, reduceMotion ? 40 : 140);
-  for (let i = 0; i < 5; i++) setTimeout(() => launchRocket(W * (0.15 + i * 0.175)), i * 120);
-
-  const end = performance.now() + CONFIG.celebrationSeconds * 1000;
-  const party = setInterval(() => {
-    if (performance.now() > end) { clearInterval(party); return settle(); }
-    if (Math.random() < 0.55) launchRocket();
-    if (Math.random() < 0.6) for (let i = 0; i < 4; i++) throwEmoji(rand(0, W), H + 30);
-    for (let i = 0; i < 2; i++) rainEmoji();
-    if (Math.random() < 0.08) confettiCannon(rand(0, 1) < 0.5 ? 0 : W, H * 0.9, rand(0, 1) < 0.5 ? -1.1 : -2.0, 60, 18);
-  }, 160);
-}
-
-function settle() {
-  $("title").classList.add("settled");
-  // Keep a gentle sprinkle going while she looks at the present
-  ambient = setInterval(() => {
-    if (Math.random() < 0.35) launchRocket();
-    if (Math.random() < 0.5) rainEmoji();
-  }, 900);
-  setTimeout(() => $("giftStage").classList.remove("hidden"), 700);
-}
-
-$("gift").addEventListener("click", () => {
-  const gift = $("gift");
-  gift.classList.add("opening"); // replaces the bounce with a shake
-  if (navigator.vibrate) navigator.vibrate(40);
-  setTimeout(() => {
-    gift.classList.add("open");
-    Sound.tada();
-    const r = gift.getBoundingClientRect();
-    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
-    confettiCannon(cx, cy, -Math.PI / 2, 160, 20);
-    for (let i = 0; i < 14; i++) throwEmoji(cx, cy, { vx: rand(-7, 7), vy: -rand(8, 16) });
-    explode(cx, cy - 80, rand(0, 360), true);
-  }, 450);
-  setTimeout(() => {
-    $("giftStage").classList.add("hidden");
-    loadVideo();
-    $("videoStage").classList.remove("hidden");
-  }, 1500);
-}, { once: true });
-
-/* ============================================================
-   Video + saving to her phone
-   ============================================================ */
-const video = $("video");
-let videoFile = null;     // the video as a File, ready to hand to the iOS share sheet
-let fetching = null;
-
-function loadVideo() {
-  video.src = CONFIG.videoSrc;
-  video.load();
-}
-
-video.addEventListener("error", () => {
-  $("playBtn").outerHTML = `<div class="error">Hmm, the video didn't load 😅<br>Make sure it's saved at <b>${CONFIG.videoSrc}</b>.</div>`;
-});
-
-$("playBtn").addEventListener("click", () => {
-  Sound.hush();
-  clearInterval(ambient);
-  $("title").classList.add("hidden"); // give the video the whole stage
-  $("playBtn").remove();
-  video.controls = true;
-  video.play().catch(() => {});
-  prefetchVideo();
-});
-
-video.addEventListener("play", () => {
-  // Offer the save button once she's started watching; make it obvious when it ends
-  $("saveBtn").hidden = false;
-  requestAnimationFrame(() => $("saveBtn").classList.add("show"));
-}, { once: true });
-
-video.addEventListener("ended", () => {
-  $("saveBtn").classList.add("nudge");
-  // A little encore
-  confettiCannon(0, H, -Math.PI / 3, 90);
-  confettiCannon(W, H, -Math.PI * 2 / 3, 90);
-  for (let i = 0; i < 3; i++) setTimeout(() => launchRocket(), i * 300);
-});
-
-// Download the file in the background while she watches so "Save" is instant.
-// iOS only opens the share sheet right after a tap, so the file must already be ready.
-function prefetchVideo() {
-  if (fetching || !navigator.canShare) return;
-  fetching = fetch(CONFIG.videoSrc)
-    .then((r) => { if (!r.ok) throw new Error(r.status); return r.blob(); })
-    .then((blob) => {
-      const f = new File([blob], CONFIG.downloadName, { type: blob.type || "video/mp4" });
-      if (navigator.canShare({ files: [f] })) videoFile = f;
-    })
-    .catch(() => {});
-}
-
-$("saveBtn").addEventListener("click", async () => {
-  // Best path on iPhone: share sheet -> "Save Video" puts it straight into Photos
-  if (videoFile) {
-    try {
-      await navigator.share({ files: [videoFile] });
-      return;
-    } catch (e) {
-      if (e.name === "AbortError") return; // she closed the share sheet
-    }
-  }
-  // Fallback: regular download (Safari saves to Files > Downloads)
-  const a = document.createElement("a");
-  a.href = CONFIG.videoSrc;
-  a.download = CONFIG.downloadName;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  const help = $("saveHelp");
-  help.hidden = false;
-  help.textContent = fetching && !videoFile
-    ? "Still getting it ready… if nothing popped up, give it a few seconds and tap again 💕"
-    : "Check Files → Downloads. Open it there and tap Share → Save Video to put it in Photos 💕";
-});
-</script>
+<noscript><p class="noscript">This quiz needs JavaScript turned on. Bravo would never.</p></noscript>
 </body>
 </html>

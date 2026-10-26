@@ -1,10 +1,10 @@
 /* ============================================================
    Everything you might want to edit lives in this file.
-   Paths are relative to the quiz page (/quiz/).
+   Paths are relative to the quiz page (the site root).
    ============================================================ */
 
 /* ---------- People + portraits ----------
-   Drop portraits into quiz/images/ with these names (JPG, ~1000px tall,
+   Drop portraits into images/ with these names (JPG, ~1000px tall,
    portrait orientation works best). `position` is the CSS object-position
    used when cropping, e.g. "50% 20%" keeps faces near the top in frame.
    If a file is missing, an elegant monogram card is shown instead.
@@ -40,7 +40,7 @@ export const PEOPLE = {
 
 /* ---------- Cameo videos ----------
    For each person, set ONE of:
-   - videoSrc:    a local file (e.g. "../video/kyle.mp4") or a direct link to an
+   - videoSrc:    a local file (e.g. "video/kyle.mp4") or a direct link to an
                   .mp4/.mov/.webm file. Plays right on the page.
    - externalUrl: the Cameo share page link. Shows a "Watch on Cameo" button
                   that opens it (Cameo pages can't be embedded).
@@ -57,7 +57,7 @@ export const CAMEOS = {
   },
   bethenny: {
     label: "YOUR UNFILTERED ADVISOR",
-    videoSrc: "../video/cameo.mp4", // same file the birthday page plays
+    videoSrc: "video/cameo.mp4", // same file the birthday page (/birthday/) plays
     externalUrl: "",
     poster: "",
   },

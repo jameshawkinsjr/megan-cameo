@@ -430,7 +430,7 @@ function placeholder(key, { failed = false } = {}) {
       }, "Watch on Cameo ↗"));
   }
 
-  if (!failed) console.info(`[quiz] No Cameo configured for ${key}. Set CAMEOS.${key}.videoSrc or externalUrl in quiz/config.js.`);
+  if (!failed) console.info(`[quiz] No Cameo configured for ${key}. Set CAMEOS.${key}.videoSrc or externalUrl in config.js.`);
   return h("div", { class: "cameo__placeholder" }, bg, icon,
     h("p", { class: "cameo__placeholder-title" }, failed ? "Technical difficulties" : "Arriving shortly"),
     h("p", { class: "cameo__placeholder-text" }, failed
