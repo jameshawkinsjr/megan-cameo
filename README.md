@@ -19,7 +19,7 @@ Both use the Cameo video in `video/cameo.mp4`. The old `/quiz/` address redirect
 
 ## 🍸 Bravo personality quiz (`/`)
 
-Flow: intro (Summer House vs Real Housewives; no names until the reveal) → 8 questions (progress bar, back button, answers kept) → 12-second "very complicated math" scoring screen → result (Kyle, Bethenny, or Bravo Hybrid on a 4–4 tie) with score split → "Get a second opinion" → "Reveal your Cameo surprises" → both Cameo cards (the winner's first, marked YOUR ALTER EGO; swipeable on phones) → restart.
+Flow: intro (Summer House vs Real Housewives; no names until the reveal) → 8 questions (progress bar, back button, answers kept) → 12-second "very complicated math" scoring screen → result (Kyle, Bethenny, or Bravo Hybrid on a 4–4 tie) with score split → "See video analysis" → both Cameo cards (the winner's first, marked YOUR ALTER EGO; swipeable on phones) → restart.
 
 Every screen is sized to fit an iPhone screen without scrolling; images shrink to the space that's left.
 

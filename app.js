@@ -241,8 +241,8 @@ function renderResult(s) {
     h("p", { class: "result__desc" }, r.description),
     h("ul", { class: "traits", "aria-label": "Your personality traits" }, r.traits.map((t) => h("li", {}, t))),
     h("p", { class: "diagnosis" }, "Your official diagnosis: ", h("strong", {}, r.diagnosis)),
-    h("button", { class: "btn btn--primary", type: "button", id: "secondOpinionBtn", onclick: () => show("verdict") },
-      "Get a second opinion ", h("span", { "aria-hidden": "true" }, "→")));
+    h("button", { class: "btn btn--primary", type: "button", id: "videoAnalysisBtn", onclick: revealCameos },
+      "See video analysis ", h("span", { "aria-hidden": "true" }, "→")));
 
   // Animate the split bar from empty to the real proportions
   requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -792,8 +792,6 @@ $("startBtn").addEventListener("click", () => {
 });
 $("backBtn").addEventListener("click", goBack);
 $("nextBtn").addEventListener("click", () => advance());
-$("revealCameosBtn").addEventListener("click", revealCameos);
-$("verdictBackBtn").addEventListener("click", () => show("result"));
 $("muteBtn").addEventListener("click", () => { Music.setMuted(!Music.muted); renderMuteButton(); renderSoundBanner(); });
 if (MUSIC.quiz?.src) {
   $("soundBanner").hidden = false;

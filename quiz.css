@@ -451,20 +451,6 @@ button { font: inherit; color: inherit; }
 .diagnosis strong { color: var(--champagne); font-weight: 700; }
 #result .btn { margin-top: clamp(12px, 2.2svh, 26px); }
 
-/* ---------- Verdict teaser ---------- */
-.teaser {
-  width: 100%; padding: clamp(28px, 6svh, 56px) 22px clamp(24px, 5svh, 44px);
-  border-radius: 24px; position: relative; overflow: hidden;
-  background:
-    radial-gradient(120% 90% at 50% 0%, rgba(226, 103, 154, 0.18), transparent 60%),
-    linear-gradient(180deg, rgba(255, 248, 240, 0.06), rgba(255, 248, 240, 0.02));
-  border: 1px solid var(--line-strong);
-  box-shadow: 0 0 60px rgba(232, 207, 160, 0.08);
-}
-.teaser h2 { margin: 0; font-family: var(--serif); font-weight: 700; font-size: clamp(32px, min(9.4vw, 6svh), 56px); line-height: 1.02; text-transform: uppercase; text-wrap: balance; }
-.teaser p:not(.eyebrow) { margin: 16px auto 0; max-width: 26em; color: var(--muted); font-size: 16px; }
-.teaser .btn { margin-top: 26px; }
-
 /* ---------- Cameo finale ---------- */
 #cameos { justify-content: flex-start; }
 .cameos__head { flex: none; }
