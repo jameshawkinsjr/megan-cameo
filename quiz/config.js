@@ -55,7 +55,7 @@ export const CAMEOS = {
   },
   bethenny: {
     label: "YOUR UNFILTERED ADVISOR",
-    videoSrc: "",
+    videoSrc: "../video/cameo.mp4", // same file the birthday page plays
     externalUrl: "",
     poster: "",
   },
