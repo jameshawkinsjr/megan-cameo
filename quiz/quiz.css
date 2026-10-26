@@ -214,12 +214,19 @@ button { font: inherit; color: inherit; }
   color: var(--cream); opacity: 0.85; margin: 5px 0;
 }
 .show-card__logo {
-  position: absolute; inset: 14% 17%; width: 66%; height: 72%;
+  position: absolute; inset: 12% 15%; width: 70%; height: 76%;
   object-fit: contain; opacity: 0; transition: opacity .6s ease;
   filter: drop-shadow(0 6px 24px rgba(0, 0, 0, 0.5));
 }
 .show-card__logo.is-loaded { opacity: 1; }
 .show-card.has-logo .show-card__wordmark > * { visibility: hidden; } /* keep the card background, drop the text */
+.show-card.is-plate-light .show-card__wordmark {
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(255, 255, 255, 0.9), transparent 70%),
+    linear-gradient(180deg, #fbf6ee, #ecdfca);
+}
+.show-card.is-plate-light .show-card__wordmark::before { border-color: rgba(156, 122, 60, 0.35); }
+.show-card.is-plate-light .show-card__logo { filter: none; }
 
 /* Side-by-side pair with a "vs" medallion */
 .duo { position: relative; display: flex; align-items: center; justify-content: center; gap: 12px; height: 100cqh; width: 100%; }

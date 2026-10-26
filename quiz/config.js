@@ -10,9 +10,9 @@
    If a file is missing, an elegant monogram card is shown instead.
 
    Show logos appear on the intro screen, where the names stay secret until
-   the reveal. Drop them into quiz/images/ (transparent PNG or SVG, light
-   colored so they read on the dark background). Until then a typographic
-   wordmark of the show name is shown. */
+   the reveal (transparent PNG or SVG). `plate: "light"` puts the logo on a
+   cream card, for logos with dark lettering; leave it out for light logos.
+   Until a logo file exists, a typographic wordmark of the show is shown. */
 export const PEOPLE = {
   kyle: {
     name: "Kyle Cooke",
@@ -20,9 +20,9 @@ export const PEOPLE = {
     initials: "KC",
     show: "Summer House",
     showShort: "Summer House",   // used on portrait captions
-    logo: { src: "images/summer-house-logo.png", alt: "Summer House logo" },
+    logo: { src: "images/summer-house-logo.png", alt: "Summer House logo", plate: "light" },
     wordmark: { above: "", main: "Summer House", below: "" },
-    image: { src: "images/kyle.jpg", position: "50% 25%" },
+    image: { src: "images/kyle.jpg", position: "50% 18%" },
     alt: "Portrait of Kyle Cooke from Summer House",
   },
   bethenny: {
@@ -31,7 +31,7 @@ export const PEOPLE = {
     initials: "BF",
     show: "The Real Housewives of New York City",
     showShort: "RHONY",
-    logo: { src: "images/rhony-logo.png", alt: "The Real Housewives of New York City logo" },
+    logo: { src: "images/rhony-logo.png", alt: "The Real Housewives of New York City logo", plate: "light" },
     wordmark: { above: "The", main: "Real Housewives", below: "of New York City" },
     image: { src: "images/bethenny.jpg", position: "50% 25%" },
     alt: "Portrait of Bethenny Frankel from The Real Housewives of New York City",

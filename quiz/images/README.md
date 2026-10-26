@@ -5,8 +5,8 @@ Images for the quiz go here.
 - `summer-house-logo.png`: Summer House
 - `rhony-logo.png`: The Real Housewives of New York City
 
-Use transparent PNGs (or SVGs; update the path in `quiz/config.js`) in a light color so they
-read on the dark background. Until a file is added, a typographic wordmark of the show name is shown.
+Use transparent PNGs (or SVGs; update the path in `quiz/config.js`). Logos with dark lettering
+should keep `plate: "light"` in the config so they sit on a cream card. Until a file is added, a typographic wordmark of the show name is shown.
 
 **Portraits** (result and Cameo screens):
 

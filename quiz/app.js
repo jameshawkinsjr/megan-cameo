@@ -79,6 +79,7 @@ function showCard(key) {
       logoStatus[key] = "ok";
       img.classList.add("is-loaded");
       fig.classList.add("has-logo");
+      if (logo.plate === "light") fig.classList.add("is-plate-light");
       fallback.setAttribute("aria-hidden", "true");
     });
     img.addEventListener("error", () => { logoStatus[key] = "missing"; img.remove(); });
@@ -212,7 +213,7 @@ function renderResult(s) {
   const bethLabel = `${s.bethennyScore}/${s.total} — ${formatPercent(s.bethennyPercentage)}`;
 
   const stage = isHybrid
-    ? h("div", { class: "stretch result__stage result__stage--duo" }, duo())
+    ? h("div", { class: "stretch result__stage result__stage--duo" }, duo((key) => portrait(key, { caption: false })))
     : h("div", { class: `stretch result__stage is-${s.result}`, style: { "--halo": "var(--accent-glow)" } }, portrait(s.result, { caption: false }));
 
   const kyleSeg = h("span", { class: "split__seg split__seg--kyle" });
