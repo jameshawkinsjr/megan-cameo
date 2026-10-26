@@ -24,13 +24,14 @@ Plain HTML, no build step, no dependencies. All sounds are generated in the brow
 
 A separate page at **`/quiz/`** (e.g. `https://jameshawkinsjr.github.io/megan-cameo/quiz/`). The birthday page at `/` is unchanged.
 
-Flow: intro → 8 questions (progress bar, back button, answers kept) → "producers are reviewing the footage" → result (Kyle, Bethenny, or Bravo Hybrid on a 4–4 tie) with score split → "Reveal your Cameo surprises" → both Cameo cards (the winner's first, marked YOUR ALTER EGO) → restart.
+Flow: intro (Summer House vs Real Housewives; no names until the reveal) → 8 questions (progress bar, back button, answers kept) → "producers are reviewing the footage" → result (Kyle, Bethenny, or Bravo Hybrid on a 4–4 tie) with score split → "Reveal your Cameo surprises" → both Cameo cards (the winner's first, marked YOUR ALTER EGO) → restart.
 
 | What | Where |
 | --- | --- |
 | Questions, results copy, names | `quiz/config.js` (`QUESTIONS`, `RESULTS`, `PEOPLE`) |
 | Cameo videos | `quiz/config.js` → `CAMEOS.kyle` / `CAMEOS.bethenny` |
 | Portraits | `quiz/images/kyle.jpg`, `quiz/images/bethenny.jpg` |
+| Show logos (intro) | `quiz/images/summer-house-logo.png`, `quiz/images/rhony-logo.png` |
 | Scoring logic | `quiz/scoring.js` |
 | UI / styles | `quiz/app.js`, `quiz/quiz.css` |
 

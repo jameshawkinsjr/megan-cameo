@@ -61,10 +61,37 @@ function portrait(key, { caption = true } = {}) {
   return fig;
 }
 
-const duo = (extraClass = "") => h("div", { class: `duo ${extraClass}` },
-  portrait("kyle"),
+/* Show logo card (no names, so nothing is spoiled before the reveal),
+   falling back to a typographic wordmark of the show */
+const logoStatus = {}; // key -> "ok" | "missing"
+
+function showCard(key) {
+  const { logo = {}, wordmark = {} } = PEOPLE[key];
+  const fallback = h("div", { class: "portrait__fallback show-card__wordmark" },
+    wordmark.above ? h("span", { class: "wordmark__minor" }, wordmark.above) : null,
+    h("span", { class: "wordmark__main" }, wordmark.main),
+    wordmark.below ? h("span", { class: "wordmark__minor" }, wordmark.below) : null);
+  const fig = h("figure", { class: `portrait show-card is-${key}` }, fallback);
+
+  if (logo.src && logoStatus[key] !== "missing") {
+    const img = h("img", { class: "show-card__logo", alt: logo.alt || "", decoding: "async" });
+    img.addEventListener("load", () => {
+      logoStatus[key] = "ok";
+      img.classList.add("is-loaded");
+      fig.classList.add("has-logo");
+      fallback.setAttribute("aria-hidden", "true");
+    });
+    img.addEventListener("error", () => { logoStatus[key] = "missing"; img.remove(); });
+    img.src = logo.src;
+    fig.append(img);
+  }
+  return fig;
+}
+
+const duo = (card = portrait, extraClass = "") => h("div", { class: `duo ${extraClass}` },
+  card("kyle"),
   h("span", { class: "duo__vs", "aria-hidden": "true" }, "vs"),
-  portrait("bethenny"));
+  card("bethenny"));
 
 /* ============================================================
    Screens
@@ -410,7 +437,7 @@ const Confetti = (() => {
 /* ============================================================
    Wire up
    ============================================================ */
-$("introDuo").replaceChildren(...duo().childNodes);
+$("introDuo").replaceChildren(...duo(showCard).childNodes);
 $("startBtn").addEventListener("click", () => {
   state.current = 0;
   renderQuestion();

@@ -7,7 +7,12 @@
    Drop portraits into quiz/images/ with these names (JPG, ~1000px tall,
    portrait orientation works best). `position` is the CSS object-position
    used when cropping, e.g. "50% 20%" keeps faces near the top in frame.
-   If a file is missing, an elegant monogram card is shown instead. */
+   If a file is missing, an elegant monogram card is shown instead.
+
+   Show logos appear on the intro screen, where the names stay secret until
+   the reveal. Drop them into quiz/images/ (transparent PNG or SVG, light
+   colored so they read on the dark background). Until then a typographic
+   wordmark of the show name is shown. */
 export const PEOPLE = {
   kyle: {
     name: "Kyle Cooke",
@@ -15,6 +20,8 @@ export const PEOPLE = {
     initials: "KC",
     show: "Summer House",
     showShort: "Summer House",   // used on portrait captions
+    logo: { src: "images/summer-house-logo.png", alt: "Summer House logo" },
+    wordmark: { above: "", main: "Summer House", below: "" },
     image: { src: "images/kyle.jpg", position: "50% 25%" },
     alt: "Portrait of Kyle Cooke from Summer House",
   },
@@ -24,6 +31,8 @@ export const PEOPLE = {
     initials: "BF",
     show: "The Real Housewives of New York City",
     showShort: "RHONY",
+    logo: { src: "images/rhony-logo.png", alt: "The Real Housewives of New York City logo" },
+    wordmark: { above: "The", main: "Real Housewives", below: "of New York City" },
     image: { src: "images/bethenny.jpg", position: "50% 25%" },
     alt: "Portrait of Bethenny Frankel from The Real Housewives of New York City",
   },

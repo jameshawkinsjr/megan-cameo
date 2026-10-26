@@ -184,6 +184,26 @@ button { font: inherit; color: inherit; }
 .is-kyle { --accent: var(--kyle); --accent-deep: var(--kyle-deep); --accent-glow: rgba(243, 154, 189, 0.30); --accent-line: rgba(243, 154, 189, 0.30); }
 .is-bethenny { --accent: var(--bethenny); --accent-deep: var(--bethenny-deep); --accent-glow: rgba(232, 207, 160, 0.26); --accent-line: rgba(232, 207, 160, 0.30); }
 
+/* Show logo cards (intro) */
+.show-card::after { display: none; }
+.show-card__wordmark { padding: 22px 14px; gap: 2px; }
+.wordmark__main {
+  font-family: var(--serif); font-style: italic; font-weight: 400;
+  font-size: clamp(24px, 6.6vw, 44px); line-height: 1; color: var(--accent);
+  text-shadow: 0 0 28px var(--accent-glow); text-wrap: balance;
+}
+.wordmark__minor {
+  font-size: clamp(10px, 2.6vw, 12px); font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--cream); opacity: 0.85; margin: 6px 0;
+}
+.show-card__logo {
+  position: absolute; inset: 14% 17%; width: 66%; height: 72%;
+  object-fit: contain; opacity: 0; transition: opacity .6s ease;
+  filter: drop-shadow(0 6px 24px rgba(0, 0, 0, 0.5));
+}
+.show-card__logo.is-loaded { opacity: 1; }
+.show-card.has-logo .show-card__wordmark > * { visibility: hidden; } /* keep the card background, drop the text */
+
 /* Side-by-side pair with a "vs" medallion */
 .duo { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; max-width: 440px; margin: 6px auto 34px; }
 .duo .portrait:first-child { transform: rotate(-2.5deg); }
