@@ -51,7 +51,7 @@ export const PEOPLE = {
 export const CAMEOS = {
   kyle: {
     label: "YOUR SUMMER HOUSE CORRESPONDENT",
-    videoSrc: "",
+    videoSrc: "video/kyle.mp4",
     externalUrl: "",
     poster: "",        // optional still image shown before the video plays
   },
